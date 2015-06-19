@@ -14,8 +14,8 @@ my_app_secret   = settings['app_secret']
 my_access_token = settings['access_token']
 FacebookAdsApi.init(my_app_id, my_app_secret, my_access_token)
 
-@app.route("/")
-def ad_accounts():
+@app.route("/yesterday")
+def report_of_yesterday():
     me = objects.AdUser(fbid='me')
     my_accounts = list(me.get_ad_accounts())
 
