@@ -26,17 +26,34 @@ def report_of_yesterday():
 
     install_count, spend = install_count_and_spend(insights)
 
-    cpi = spend / install_count
+    if not install_count == 0:
+        cpi = spend / install_count
+    else:
+        cpi = 0
 
     response = Response(json.dumps({"install_count":install_count, "spend":spend, "date":yesterday_date_string, "cpi":cpi}), mimetype='application/json')
 
     return response
+
+@app.route("/last_week")
+def report_of_last_week():
+    me = objects.AdUser(fbid='me')
+    my_accounts = list(me.get_ad_accounts())
+
+    #isights = my_accounts[1].get_report_stats(params={"date_preset":'last_week',"data_columns":["reach","spend","adgroup_id","account_name","clicks","actions"],"actions_group_by":["action_device","action_type"]})
+    #print insights
+    #install_count, spend = install_count_and_spend(insights)
+    #cpi = spend / install_count
+    #response = Response(json.dumps({"install_count":install_count, "spend":spend, "date":yesterday_date_string, "cpi":cpi}), mimetype='application/json')
+    #return response
 
 def install_count_and_spend(insights):
     count = 0
     spend = 0
 
     for insight in insights:
+        if not (isinstance(insight["actions"], list) or isinstance(insight["actions"], dict)):
+            continue
         for action in insight["actions"]:
             if action["action_type"] == "mobile_app_install":
                 count += action["value"]
